@@ -134,7 +134,7 @@ body::after {
   margin-left: 8px;
   font-size: 12px;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
+  text-transform: none;
   color: var(--green);
   text-shadow: 0 0 10px rgba(34, 255, 68, 0.45);
   animation: title-glitch 3.4s infinite steps(1);

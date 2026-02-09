@@ -334,18 +334,18 @@
     block.el.classList.add("running");
     status.textContent = `[0] running | ${block.command}`;
 
-    await typeText(block.commandEl, block.command, 95);
+    await typeText(block.commandEl, block.command, 30);
 
     try {
       const result = await block.output();
-      await typeText(block.outputEl, result, 320);
+      block.outputEl.textContent = String(result || "");
       block.el.classList.remove("running");
       block.el.classList.add("done");
       block.cursorEl.classList.add("idle");
       block.executed = true;
       status.textContent = `[0] done | ${block.command}`;
     } catch (error) {
-      await typeText(block.outputEl, `[error] ${error.message}\n`, 300);
+      block.outputEl.textContent = `[error] ${error.message}\n`;
       block.el.classList.remove("running");
       block.el.classList.add("done");
       block.cursorEl.classList.add("idle");
@@ -358,18 +358,22 @@
     return new Promise((resolve) => {
       let i = 0;
       const value = String(text || "");
-      const started = performance.now();
-      let lastTick = started;
+      let lastTick = performance.now();
+      let carry = 0;
 
       function step(now) {
         const elapsed = (now - lastTick) / 1000;
         lastTick = now;
 
-        const chunk = Math.max(1, Math.floor(cps * elapsed));
-        const next = Math.min(value.length, i + chunk);
-        if (next > i) {
-          targetEl.textContent += value.slice(i, next);
-          i = next;
+        carry += cps * elapsed;
+        const chunk = Math.floor(carry);
+        if (chunk > 0) {
+          carry -= chunk;
+          const next = Math.min(value.length, i + chunk);
+          if (next > i) {
+            targetEl.textContent += value.slice(i, next);
+            i = next;
+          }
         }
 
         if (i < value.length) {
