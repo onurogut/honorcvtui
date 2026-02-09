@@ -1,0 +1,303 @@
+:root {
+  --bg-1: #070b09;
+  --bg-2: #090f0c;
+  --terminal-bg: #0d1110;
+  --text: #d7e2dc;
+  --muted: #74857d;
+  --green: #22ff44;
+  --cyan: #2fd7ff;
+  --yellow: #ffe74a;
+  --danger: #ff5b57;
+  --shadow: rgba(0, 0, 0, 0.62);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  background:
+    radial-gradient(1200px 820px at 10% 4%, rgba(31, 86, 52, 0.42), transparent 62%),
+    radial-gradient(900px 700px at 90% 14%, rgba(17, 58, 73, 0.35), transparent 64%),
+    radial-gradient(1200px 760px at 45% 105%, rgba(12, 41, 25, 0.5), transparent 66%),
+    linear-gradient(180deg, #040806 0%, #0a120e 45%, #060c09 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.008) 0px,
+    rgba(255, 255, 255, 0.008) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.35;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 0, 0.42) 100%);
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px 48px;
+  position: relative;
+  z-index: 2;
+}
+
+.terminal {
+  width: min(1280px, 100%);
+  min-height: 88vh;
+  background:
+    linear-gradient(180deg, rgba(14, 20, 17, 0.97), rgba(11, 16, 14, 0.97));
+  border-radius: 0;
+  box-shadow: 0 28px 60px var(--shadow);
+  border: 1px solid rgba(34, 255, 68, 0.8);
+  overflow: hidden;
+  position: relative;
+}
+
+.terminal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.024) 0px,
+    rgba(255, 255, 255, 0.024) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 6;
+}
+
+.terminal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.22) 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 7;
+}
+
+.terminal__top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(34, 255, 68, 0.35);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dot--red {
+  background: var(--danger);
+}
+
+.dot--yellow {
+  background: var(--yellow);
+}
+
+.dot--green {
+  background: var(--green);
+}
+
+.terminal__title {
+  margin-right: auto;
+  margin-left: 8px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-shadow: 0 0 10px rgba(34, 255, 68, 0.45);
+  animation: title-glitch 3.4s infinite steps(1);
+}
+
+.terminal__screen {
+  padding: 18px 22px 30px;
+  position: relative;
+  z-index: 2;
+  animation: crt-flicker 5s infinite;
+}
+
+.prompt {
+  color: var(--green);
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.prompt-user {
+  color: var(--yellow);
+}
+
+.prompt-at,
+.prompt-path {
+  color: var(--cyan);
+}
+
+.prompt-cmd {
+  color: var(--green);
+}
+
+.terminal__content {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.cmd-block {
+  border: 1px solid rgba(34, 255, 68, 0.2);
+  background: rgba(8, 12, 10, 0.55);
+  padding: 12px 12px 10px;
+  min-height: 90px;
+}
+
+.cmd-block.running {
+  box-shadow: inset 0 0 0 1px rgba(47, 215, 255, 0.4);
+}
+
+.cmd-line {
+  color: var(--green);
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cmd-text {
+  color: var(--green);
+}
+
+.cursor {
+  color: var(--green);
+  margin-left: 2px;
+  animation: cursor-blink 1s steps(1) infinite;
+}
+
+.cursor.idle {
+  opacity: 0;
+  animation: none;
+}
+
+.cmd-output {
+  margin: 0;
+  color: var(--text);
+  white-space: pre-wrap;
+  line-height: 1.45;
+  font-size: 14px;
+  text-shadow: 0 0 6px rgba(215, 226, 220, 0.05);
+}
+
+.cmd-sentinel {
+  height: 1px;
+}
+
+.status {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 12px;
+  border-top: 1px dashed rgba(34, 255, 68, 0.25);
+  padding-top: 10px;
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes crt-flicker {
+  0% {
+    opacity: 0.99;
+  }
+  5% {
+    opacity: 0.97;
+  }
+  10% {
+    opacity: 0.995;
+  }
+  30% {
+    opacity: 0.985;
+  }
+  50% {
+    opacity: 0.96;
+  }
+  65% {
+    opacity: 0.99;
+  }
+  80% {
+    opacity: 0.975;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes title-glitch {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    text-shadow: 0 0 9px rgba(34, 255, 68, 0.45);
+  }
+  8% {
+    transform: translate(0.6px, -0.2px);
+    text-shadow: -1px 0 rgba(47, 215, 255, 0.5), 1px 0 rgba(255, 91, 87, 0.35);
+  }
+  9% {
+    transform: translate(-0.6px, 0.2px);
+    text-shadow: 1px 0 rgba(47, 215, 255, 0.35), -1px 0 rgba(255, 91, 87, 0.5);
+  }
+  10% {
+    transform: translate(0, 0);
+  }
+  68% {
+    transform: translate(0.4px, 0);
+  }
+  69% {
+    transform: translate(-0.4px, 0);
+  }
+  70% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (max-width: 720px) {
+  .terminal__screen {
+    padding: 14px;
+  }
+
+  .cmd-output {
+    font-size: 13px;
+  }
+}
